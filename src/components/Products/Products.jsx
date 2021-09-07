@@ -13,7 +13,7 @@ const Products = () => {
 
   return (
     <main className={classes.content}>
-      {/* adds height in the exact height of navbar so navbar doesn't block Products */}
+      {/* the below div adds height in the exact size of navbar so navbar doesn't block Products */}
       <div className={classes.toolbar} />
       <Grid container justify="center" spacing={4}>
         {products.map((product) => (
