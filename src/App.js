@@ -12,16 +12,40 @@ const App = () => {
 
     setProducts(data);
   };
+
   const fetchCart = async () => {
     setCart(await commerce.cart.retrieve());
   };
 
   const handleAddToCart = async (productId, quantity) => {
-    const item = await commerce.cart.add(productId, quantity);
+    const { cart } = await commerce.cart.add(productId, quantity);
 
     // set Cart state to updated cart after item has been added
-    setCart(item.cart);
+    setCart(cart);
   };
+
+  const handleUpdateCartQty = async (productId, quantity) => {
+    //   quantity parameter in update method is put in a new object b/c it is only one of the things we want to update
+      const { cart } = await commerce.cart.update(productId, { quantity })
+
+      setCart(cart)
+  }
+
+  const handleRemoveFromCart = async (productId) => {
+  
+      const { cart } = await commerce.cart.remove(productId)
+
+      setCart(cart)
+  }
+
+  const handleEmptyCart = async () => {
+  
+      const { cart } = await commerce.cart.empty()
+
+      setCart(cart)
+  }
+
+
 
   useEffect(() => {
     fetchProducts();
@@ -37,7 +61,12 @@ const App = () => {
             <Products products={products} onAddToCart={handleAddToCart} />
           </Route>
           <Route exact path='/cart'>
-            <Cart cart={cart} />
+            <Cart 
+            cart={cart}
+            handleUpdateCartQty={handleUpdateCartQty}
+            handleRemoveFromCart={handleRemoveFromCart}
+            handleEmptyCart={handleEmptyCart}
+            />
           </Route>
         </Switch>
       </div>
