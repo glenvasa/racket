@@ -25,6 +25,11 @@ const AddressForm = ({ checkoutToken }) => {
     label: name,
   }));
 
+  const subdivisions = Object.entries(shippingSubdivisions).map(([code, name]) => ({
+    id: code,
+    label: name,
+  }));
+
   const fetchShippingCountries = async (checkoutTokenId) => {
     //   localeListCountries method lists all countries on commmerce.js platform
     //   localeListShippingCountries lists only the countries we authorized on the platform
@@ -35,9 +40,20 @@ const AddressForm = ({ checkoutToken }) => {
     setShippingCountry(Object.keys(countries)[0]);
   };
 
+  const fetchSubdivisions = async (countryCode) => {
+      const { subdivisions} = await commerce.services.localeListSubdivisions(countryCode)
+
+      setShippingSubdivisions(subdivisions)
+      setShippingSubdivision(Object.keys(subdivisions)[0])
+  }
+
   useEffect(() => {
     fetchShippingCountries(checkoutToken.id);
-  }, []);
+  }, [checkoutToken.id]);
+
+  useEffect(() => {
+      if(shippingCountry) fetchSubdivisions(shippingCountry)
+  }, [shippingCountry])
 
   return (
     <>
@@ -67,15 +83,21 @@ const AddressForm = ({ checkoutToken }) => {
                 ))}
               </Select>
             </Grid>
-            {/* <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={6}>
               <InputLabel>Shipping Subdivision</InputLabel>
-              <Select value='' fullWidth onChange=''>
-                <MenuItem key='' value=''>
-                  Select Me
-                </MenuItem>
+              <Select
+                value={shippingSubdivision}
+                fullWidth
+                onChange={(e) => setShippingSubdivision(e.target.value)}
+              >
+                {subdivisions.map((subdivision) => (
+                  <MenuItem key={subdivision.id} value={subdivision.id}>
+                    {subdivision.label}
+                  </MenuItem>
+                ))}
               </Select>
             </Grid>
-            <Grid item xs={12} sm={6}>
+             {/* <Grid item xs={12} sm={6}>
               <InputLabel>Shipping Options</InputLabel>
               <Select value='' fullWidth onChange=''>
                 <MenuItem key='' value=''>
