@@ -40,7 +40,7 @@ const AddressForm = ({ checkoutToken }) => {
   const fetchShippingCountries = async (checkoutTokenId) => {
     //   localeListCountries method lists all countries on commmerce.js platform
     //   localeListShippingCountries lists only the countries we authorized on the platform
-    const { countries } = await commerce.services.localeListCountries(
+    const { countries } = await commerce.services.localeListShippingCountries(
       checkoutTokenId
     );
     setShippingCountries(countries);
@@ -67,6 +67,8 @@ const AddressForm = ({ checkoutToken }) => {
     );
 
     setShippingOptions(options);
+    console.log(options)
+    
     setShippingOption(options[0].id);
   };
 
