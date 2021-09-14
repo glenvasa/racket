@@ -10,6 +10,7 @@ const steps = ["Shipping address", "Payment details"];
 const Checkout = ({cart}) => {
   const [activeStep, setActiveStep] = useState(0)
   const [checkoutToken, setcheckoutToken] = useState(null)
+  const [shippingData, setShippingData] = useState({})
 
   const classes = useStyles();
 
@@ -28,6 +29,16 @@ const Checkout = ({cart}) => {
     generateToken()
   }, [cart])
 
+//   since we are setting the state using the previous state value, we have to call as cb fn
+//  as a result we are not mutating the old state
+const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1)
+const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1)
+
+const next = (data) => {
+    setShippingData(data)
+
+    nextStep()
+}
   
  const Confirmation = () => (
      <div>
@@ -36,8 +47,8 @@ const Checkout = ({cart}) => {
  )
 
   const Form = () => activeStep === 0
-  ? <AddressForm checkoutToken={checkoutToken}/>
-  : <PaymentForm />
+  ? <AddressForm checkoutToken={checkoutToken} next={next}/>
+  : <PaymentForm shippingData={shippingData}/>
 
   return (
     <>
